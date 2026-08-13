@@ -384,6 +384,7 @@ SQLRETURN libpqConnect(RS_CONN_INFO *pConn)
             if(_stricmp(plugin_name, PLUGIN_BROWSER_IDC_AUTH) == 0
                || _stricmp(plugin_name, PLUGIN_IDC_TOKEN_EXCHANGE) == 0) {
                 // Both present an IdC-issued token, so the server performs no exchange.
+                ppKeywords[iCount] = RS_TOKEN_TYPE;
                 ppValues[iCount++] = RS_TOKEN_TYPE_ACCESS_TOKEN;
             } else if(_stricmp(plugin_name, PLUGIN_IDP_TOKEN_AUTH) == 0 && pConnectProps->pIamProps->szTokenType[0] != '\0') {
 				ppKeywords[iCount] = RS_TOKEN_TYPE;
