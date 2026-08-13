@@ -3848,6 +3848,10 @@ static SQLRETURN handleFederatedNonIamConnection(RS_CONN_INFO* pConn) {
             return SQL_ERROR;
         }
     }
+
+    // No native-auth plugin, so there is nothing to do here. Previously this fell off the end
+    // and returned an undefined value that the caller compares against SQL_ERROR.
+    return SQL_SUCCESS;
 }
 
 /*====================================================================================================================================================*/
