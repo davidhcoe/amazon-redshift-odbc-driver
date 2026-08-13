@@ -88,12 +88,16 @@ bool static isIdcOrNativeIdpPlugin(const rs_string &pluginName) {
            IAMUtils::isEqual(IAMUtils::convertStringToWstring(pluginName),
                              IAMUtils::convertCharStringToWstring(PLUGIN_IDP_TOKEN_AUTH), false) ||
            IAMUtils::isEqual(IAMUtils::convertStringToWstring(pluginName),
+                             IAMUtils::convertCharStringToWstring(PLUGIN_IDC_TOKEN_EXCHANGE), false) ||
+           IAMUtils::isEqual(IAMUtils::convertStringToWstring(pluginName),
                              IAMUtils::convertCharStringToWstring(PLUGIN_BROWSER_IDC_AUTH), false);
 }
 
 bool static isIdcPlugin(const rs_string &pluginName) {
     return IAMUtils::isEqual(IAMUtils::convertStringToWstring(pluginName),
                              IAMUtils::convertCharStringToWstring(PLUGIN_IDP_TOKEN_AUTH), false)||
+           IAMUtils::isEqual(IAMUtils::convertStringToWstring(pluginName),
+                             IAMUtils::convertCharStringToWstring(PLUGIN_IDC_TOKEN_EXCHANGE), false)||
            IAMUtils::isEqual(IAMUtils::convertStringToWstring(pluginName),
                              IAMUtils::convertCharStringToWstring(PLUGIN_BROWSER_IDC_AUTH), false);
 }

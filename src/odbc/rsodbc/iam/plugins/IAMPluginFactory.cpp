@@ -57,6 +57,10 @@ std::unique_ptr<IAMPluginCredentialsProvider> IAMPluginFactory::CreatePlugin(
     {
         credProvider = CreateBrowserIdcAuthPlugin( in_config, in_argsMap);
     }
+    else if (IAMUtils::isEqual(in_pluginName, IAMUtils::convertCharStringToWstring(PLUGIN_IDC_TOKEN_EXCHANGE), false))
+    {
+        credProvider = CreateIdcTokenExchangePlugin( in_config, in_argsMap);
+    }
     else
     {
         credProvider = CreateExternalPlugin( in_config, in_argsMap); // .Detach()
@@ -184,6 +188,17 @@ std::unique_ptr<BrowserIdcAuthPlugin> IAMPluginFactory::CreateBrowserIdcAuthPlug
 
     return std::unique_ptr<BrowserIdcAuthPlugin>(
         new BrowserIdcAuthPlugin( in_config, in_argsMap));
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+std::unique_ptr<IdcTokenExchangePlugin> IAMPluginFactory::CreateIdcTokenExchangePlugin(
+        const IAMConfiguration& in_config,
+    const std::map<rs_string, rs_string>& in_argsMap)
+{
+    RS_LOG_DEBUG("IAM", "IAMPluginFactory::CreateIdcTokenExchangePlugin");
+
+    return std::unique_ptr<IdcTokenExchangePlugin>(
+        new IdcTokenExchangePlugin( in_config, in_argsMap));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

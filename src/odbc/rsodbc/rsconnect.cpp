@@ -3408,7 +3408,8 @@ void RS_CONN_INFO::readMoreConnectPropsFromRegistry(int readUser)
       char pluginName[MAX_IDEN_LEN];
       RS_SQLGetPrivateProfileString(pConnectProps->szDSN, RS_PLUGIN_NAME, "", pluginName, MAX_IDEN_LEN, ODBC_INI);
 
-      if(_stricmp(pluginName, PLUGIN_IDP_TOKEN_AUTH) == 0 || _stricmp(pluginName, PLUGIN_BROWSER_IDC_AUTH) == 0) {
+      if(_stricmp(pluginName, PLUGIN_IDP_TOKEN_AUTH) == 0 || _stricmp(pluginName, PLUGIN_BROWSER_IDC_AUTH) == 0
+         || _stricmp(pluginName, PLUGIN_IDC_TOKEN_EXCHANGE) == 0) {
         pConnectProps->isNativeAuth = true;
       }
 
@@ -3825,7 +3826,8 @@ static SQLRETURN handleFederatedNonIamConnection(RS_CONN_INFO* pConn) {
 
     if (pIamProps && (pIamProps->szPluginName[0] != '\0') &&
         ((_stricmp(pIamProps->szPluginName, PLUGIN_IDP_TOKEN_AUTH) == 0) || 
-         (_stricmp(pIamProps->szPluginName, PLUGIN_BROWSER_IDC_AUTH) == 0))) {
+         (_stricmp(pIamProps->szPluginName, PLUGIN_BROWSER_IDC_AUTH) == 0) ||
+         (_stricmp(pIamProps->szPluginName, PLUGIN_IDC_TOKEN_EXCHANGE) == 0))) {
         copyCommonConnectionProperties(pIamProps, pConnectProps);
         pConnectProps->isNativeAuth = true;
 

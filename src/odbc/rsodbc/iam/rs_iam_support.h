@@ -121,6 +121,9 @@ namespace IamSupport
     #define IAM_PLUGIN_BROWSER_AZURE_OAUTH2    "BrowserAzureADOAuth2"  // used for federated native IdP auth
     #define JWT_IAM_AUTH_PLUGIN         "JwtIamAuthPlugin"    // used for federated Jwt IAM auth
     #define PLUGIN_IDP_TOKEN_AUTH               "IdpTokenAuthPlugin"
+// Exchanges an external IdP token for an IdC token client-side, so the external token is
+// used once instead of being re-exchanged by the server on every connection.
+#define PLUGIN_IDC_TOKEN_EXCHANGE           "IdcTokenExchangePlugin"
     #define PLUGIN_BROWSER_IDC_AUTH             "BrowserIdcAuthPlugin"
 
     /**

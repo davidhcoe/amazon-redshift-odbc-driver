@@ -381,8 +381,9 @@ SQLRETURN libpqConnect(RS_CONN_INFO *pConn)
 		}
 
 		if(pConnectProps->pIamProps) {
-            if(_stricmp(plugin_name, PLUGIN_BROWSER_IDC_AUTH) == 0) {
-                ppKeywords[iCount] = RS_TOKEN_TYPE;
+            if(_stricmp(plugin_name, PLUGIN_BROWSER_IDC_AUTH) == 0
+               || _stricmp(plugin_name, PLUGIN_IDC_TOKEN_EXCHANGE) == 0) {
+                // Both present an IdC-issued token, so the server performs no exchange.
                 ppValues[iCount++] = RS_TOKEN_TYPE_ACCESS_TOKEN;
             } else if(_stricmp(plugin_name, PLUGIN_IDP_TOKEN_AUTH) == 0 && pConnectProps->pIamProps->szTokenType[0] != '\0') {
 				ppKeywords[iCount] = RS_TOKEN_TYPE;
@@ -391,7 +392,8 @@ SQLRETURN libpqConnect(RS_CONN_INFO *pConn)
 		}
 
 		if (pConnectProps->pIamProps &&
-			 (_stricmp(plugin_name, PLUGIN_IDP_TOKEN_AUTH) == 0) &&
+			 ((_stricmp(plugin_name, PLUGIN_IDP_TOKEN_AUTH) == 0) ||
+			  (_stricmp(plugin_name, PLUGIN_IDC_TOKEN_EXCHANGE) == 0)) &&
 			pConnectProps->pIamProps->szIdentityNamespace[0] != '\0') {
 			ppKeywords[iCount] = RS_IDENTITY_NAMESPACE;
 			ppValues[iCount++] = pConnectProps->pIamProps->szIdentityNamespace;

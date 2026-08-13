@@ -13,6 +13,7 @@
 #include "IAMJwtBasicCredentialsProvider.h"
 #include "IAMBrowserAzureOAuth2CredentialsProvider.h"
 #include "JwtIamAuthPlugin.h"
+#include "IdcTokenExchangePlugin.h"
 #include "IdpTokenAuthPlugin.h"
 #include "BrowserIdcAuthPlugin.h"
 
@@ -171,6 +172,11 @@ namespace IamSupport
         /// 
         /// @return Browser IdC credentials provider wrapped using smart pointer
         static std::unique_ptr<BrowserIdcAuthPlugin> CreateBrowserIdcAuthPlugin(
+                        const IAMConfiguration& in_config = IAMConfiguration(),
+            const std::map<rs_string, rs_string>& in_argsMap
+            = std::map<rs_string, rs_string>());
+
+        static std::unique_ptr<IdcTokenExchangePlugin> CreateIdcTokenExchangePlugin(
                         const IAMConfiguration& in_config = IAMConfiguration(),
             const std::map<rs_string, rs_string>& in_argsMap
             = std::map<rs_string, rs_string>());

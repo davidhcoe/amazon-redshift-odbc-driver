@@ -1268,6 +1268,7 @@ struct SHOWPROCEDURESFUNCTIONSResult {
 #define JWT_IAM_AUTH_PLUGIN         "JwtIamAuthPlugin"   // used for federated Jwt IAM auth
 #define PLUGIN_IDP_TOKEN_AUTH       "IdpTokenAuthPlugin"
 #define PLUGIN_BROWSER_IDC_AUTH     "BrowserIdcAuthPlugin"
+#define PLUGIN_IDC_TOKEN_EXCHANGE   "IdcTokenExchangePlugin"
 
 #define RS_LOG_LEVEL_OPTION_NAME "LogLevel"
 #define RS_LOG_PATH_OPTION_NAME  "LogPath"
