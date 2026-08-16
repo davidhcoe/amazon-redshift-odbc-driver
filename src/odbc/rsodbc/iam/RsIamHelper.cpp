@@ -496,6 +496,11 @@ void RsIamHelper::SetIamSettings(
         settings.m_idp_response_timeout = pIamProps->lIdpResponseTimeout;
         settings.m_idcClientDisplayName = pIamProps->szIdcClientDisplayName;
 
+        // IdcTokenExchangePlugin assumes this role with the external token to obtain the
+        // temporary credentials that sign CreateTokenWithIAM.
+        settings.m_role_arn = pIamProps->szRoleArn;
+        settings.m_role_session_name = pIamProps->szRoleSessionName;
+
         if (pIamProps->szPluginName[0] != '\0' && (_stricmp(pIamProps->szPluginName, PLUGIN_IDP_TOKEN_AUTH) == 0)) {
             // Explicitly disable caching for idc programmatic plugin. This is set false by default in RsSettings.h
             settings.m_disableCache = true;

@@ -31,11 +31,35 @@ namespace Redshift
          *
          * PROOF OF CONCEPT
          * ----------------
-         * sso-oidc:CreateTokenWithIAM requires SigV4, so this build signs the exchange with
-         * whatever the AWS SDK default credential chain resolves (environment, profile,
-         * instance role). A real client authenticating a user through an external IdP has no
-         * AWS credentials, so shipping this depends on IdC accepting the jwt-bearer grant
-         * without SigV4. That single change is the ask; everything else here works today.
+         * sso-oidc:CreateTokenWithIAM requires SigV4. The caller has no AWS credentials, so the
+         * external JWT is first exchanged for temporary ones with sts:AssumeRoleWithWebIdentity,
+         * which is itself unsigned -- the JWT is the credential. That is the same bootstrap
+         * IAMJwtPluginCredentialsProvider already performs, and the same chain the Power Query
+         * connector validated end to end, so no AWS-side change is required.
+         *
+         * Requires role_arn: an IAM role whose trust policy accepts the external IdP, and whose
+         * policy allows sso-oauth:CreateTokenWithIAM.
+         *
+         * TOKEN CACHE
+         * -----------
+         * The exchanged token is held in memory and also written to a per-user file
+         * (%LOCALAPPDATA%\Amazon\Redshift\IdcTokenCache on Windows, ~/.redshift/idc-token-cache
+         * otherwise), encrypted with DPAPI on Windows and owner-only elsewhere. The disk copy is
+         * what makes this usable from a host such as Power BI, which evaluates a single user
+         * action across several concurrent processes while handing each of them the same
+         * external JWT: without it every process after the first is rejected with
+         * "invalid_grant: JWT is already redeemed".
+         *
+         * The cache is keyed on a hash of application ARN + region + the assertion itself, so
+         * two users of the same application never share an entry.
+         *
+         * A disk cache alone would still race, because those sibling processes start at the
+         * same time and would all miss it and all exchange. The cache-miss path is therefore
+         * serialised across processes by a named mutex (Windows) or lock file (POSIX) on the
+         * same key: the first process exchanges while the rest wait and then read its result.
+         *
+         * Known gap for a production implementation: nothing evicts old cache files. Because
+         * the assertion is part of the key, every new external JWT produces a new file.
          *
          * Connection parameters (all already plumbed, none new):
          *   plugin_name  = IdcTokenExchangePlugin
@@ -67,6 +91,10 @@ namespace Redshift
             void ValidateArgumentsMap() override;
 
             void InitializeIdcClient(const rs_string& in_region);
+
+            /// @brief Turns the external JWT into temporary AWS credentials so the exchange can
+            ///        be signed on a machine that holds no AWS credentials of its own.
+            Aws::Auth::AWSCredentials AssumeRoleWithAssertion(const rs_string& in_region);
 
             /// @brief CreateTokenWithIAM with the jwt-bearer grant, assertion = external JWT.
             rs_string ExchangeAssertionForIdcToken();
